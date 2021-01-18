@@ -70,7 +70,6 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('history', async (req) => {
-    console.log(req);
     const { email } = req;
     const previousMessages = await getHistory(email);
     if (previousMessages !== null) socket.emit('history', previousMessages.messages);
