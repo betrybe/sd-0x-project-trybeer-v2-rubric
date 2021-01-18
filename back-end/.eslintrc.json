@@ -12,7 +12,7 @@
     "no-magic-numbers": [
       "error",
       {
-        "ignore": [1, 200, 201, 404, 403],
+        "ignore": [1],
         "ignoreArrayIndexes": true,
         "enforceConst": true,
         "detectObjects": false
