@@ -55,7 +55,7 @@ jobs:
         with:
           repository-test-name: 'betrybe/sd-0x-project-trybeer-v2-tests'
           repository-test-branch: 'main'
-          # npm-start: true
+          npm-start: true
         env:
           MYSQL_USER: 'root'
           MYSQL_PASSWORD: 'password'
