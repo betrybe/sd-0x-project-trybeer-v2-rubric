@@ -4,3 +4,4 @@ setupTests.js
 .gitattributes
 .env
 *.js
+*.jsx
