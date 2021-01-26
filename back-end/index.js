@@ -1,42 +1,20 @@
-require('dotenv').config();
+const http = require('http');
+const cors = require('cors');
 const express = require('express');
 const bodyParser = require('body-parser');
-const path = require('path');
-const cors = require('cors');
+const httpFactory = require('./httpFactory');
+const socketFactory = require('./socket/index');
 
-const errorController = require('./controller/errorController');
-const userController = require('./controller/userController');
-const productController = require('./controller/productController');
-const saleController = require('./controller/saleController');
-const middlewares = require('./middleware/validateJwt');
+const server = express();
+server.use(bodyParser.json());
+server.use(cors());
 
-const app = express();
-app.use(cors());
+const httpServer = http.createServer(server);
 
-app.use('/images', express.static(path.join(__dirname, 'public/images')));
+const { io } = socketFactory(httpServer);
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+httpFactory(server, io);
 
-app.get('/login', middlewares.loginJwt, userController.getLoginUser);
+const { PORT } = process.env || 3001;
 
-app.post('/login', userController.loginUser);
-app.post('/users', userController.createUser);
-
-app.patch('/users/me', middlewares.loginJwt, userController.updateUserById);
-
-app.get('/products', middlewares.loginJwt, productController.getAllProducts);
-app.get('/products/:id', middlewares.loginJwt, productController.getProductById);
-
-app.get('/sales', middlewares.loginJwt, saleController.getSale);
-app.post('/sales', middlewares.loginJwt, saleController.createSale);
-app.get('/sales/:id', middlewares.loginJwt, saleController.getSaleProducts);
-app.patch('/sales/:id', middlewares.loginJwt, saleController.updateSaleById);
-
-app.use(errorController.promiseErrors);
-
-app.all('*', errorController.endpointNotFound);
-
-const NODE_PORT = process.env.NODE_PORT || 3001;
-
-app.listen(NODE_PORT, () => console.log(`Listening on ${NODE_PORT}`));
+httpServer.listen(PORT, () => console.log(`Listening on port ${PORT}`));
